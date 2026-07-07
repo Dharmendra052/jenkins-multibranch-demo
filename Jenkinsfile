@@ -1,34 +1,29 @@
 pipeline {
-
     agent any
 
-    tools {
-        maven 'Maven3'
-    }
-
     stages {
-
-        stage('Checkout') {
-            steps {
-                checkout scm
-            }
-        }
-
         stage('Build') {
             steps {
                 sh 'mvn clean package'
             }
         }
 
-    }
-
-    post {
-        success {
-            echo "Build Successful"
+        stage('Deploy to Dev') {
+            when {
+                branch 'dev'
+            }
+            steps {
+                echo 'Deploying to Development'
+            }
         }
 
-        failure {
-            echo "Build Failed"
+        stage('Deploy to Production') {
+            when {
+                branch 'main'
+            }
+            steps {
+                echo 'Deploying to Production'
+            }
         }
     }
 }
